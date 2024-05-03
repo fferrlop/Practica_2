@@ -12,8 +12,13 @@ public class InterfazUsuario extends JFrame {
         setLayout(new BorderLayout());
 
         JPanel panelSeparacion = new JPanel();
-        panelSeparacion.setPreferredSize(new Dimension(150, 0));
+        panelSeparacion.setPreferredSize(new Dimension(220, 0));
         panelSeparacion.setBackground(Color.LIGHT_GRAY);
+        panelSeparacion.setLayout(new BorderLayout());
+
+        JButton botonGuardar = new JButton("Guardar Experimento");
+        panelSeparacion.add(botonGuardar, BorderLayout.NORTH);
+
         add(panelSeparacion, BorderLayout.WEST);
 
         JSeparator separator = new JSeparator(JSeparator.VERTICAL);
