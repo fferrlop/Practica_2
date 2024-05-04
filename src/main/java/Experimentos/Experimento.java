@@ -2,10 +2,8 @@ package Experimentos;
 
 import Bacterias.Bacteria;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,13 +32,41 @@ public class Experimento {
         try {
             File file = new File("src/main/java/ExperimentosGuardados/" + filename);
             file.getParentFile().mkdirs();
-            FileOutputStream fileOut = new FileOutputStream(file);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(bacteria);
-            out.close();
-            fileOut.close();
+            PrintWriter writer = new PrintWriter(file);
+            writer.println(bacteria.getNombre());
+            writer.println(bacteria.getFechaInicio());
+            writer.println(bacteria.getFechaFin());
+            writer.println(bacteria.getNumeroBacterias());
+            writer.println(bacteria.getTemperatura());
+            writer.println(bacteria.getLuminosidad());
+            for (int i = 0; i < 30; i++) {
+                writer.println(bacteria.getDosisComida()[i]);
+            }
+            writer.close();
         } catch (IOException i) {
             i.printStackTrace();
         }
+    }
+
+    public Bacteria loadBacteria(String filename) {
+        Bacteria bacteria = null;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("src/main/java/ExperimentosGuardados/" + filename));
+            String nombre = reader.readLine();
+            LocalDate fechaInicio = LocalDate.parse(reader.readLine());
+            LocalDate fechaFin = LocalDate.parse(reader.readLine());
+            int numeroBacterias = Integer.parseInt(reader.readLine());
+            double temperatura = Double.parseDouble(reader.readLine());
+            String luminosidad = reader.readLine();
+            int[] dosisComida = new int[30];
+            for (int i = 0; i < 30; i++) {
+                dosisComida[i] = Integer.parseInt(reader.readLine());
+            }
+            bacteria = new Bacteria(nombre, fechaInicio, fechaFin, numeroBacterias, temperatura, luminosidad, dosisComida);
+            reader.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+        return bacteria;
     }
 }
