@@ -1,9 +1,9 @@
 package Bacterias;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Bacteria implements Serializable {
+public class Bacteria {
+
     private String nombre;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
@@ -12,26 +12,41 @@ public class Bacteria implements Serializable {
     private String luminosidad;
     private int[] dosisComida = new int[30];
 
-    public Bacteria(String nombre, LocalDate fechaInicio, LocalDate fechaFin, int numeroBacterias, double temperatura, String luminosidad, int comidaInicial, int diaIncremento, int comidaDiaIncremento, int comidaFinal) {
+    public Bacteria(String nombre, LocalDate fechaInicio, LocalDate fechaFin, int numeroBacterias, double temperatura, String luminosidad, int[] dosisComida) {
         this.nombre = nombre;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.numeroBacterias = numeroBacterias;
         this.temperatura = temperatura;
         this.luminosidad = luminosidad;
-        calcularDosisComida(comidaInicial, diaIncremento, comidaDiaIncremento, comidaFinal);
+        this.dosisComida = dosisComida;
     }
 
-    private void calcularDosisComida(int comidaInicial, int diaIncremento, int comidaDiaIncremento, int comidaFinal) {
-        int incremento = (comidaDiaIncremento - comidaInicial) / (diaIncremento - 1);
-        int decremento = (comidaDiaIncremento - comidaFinal) / (30 - diaIncremento);
+    public String getNombre() {
+        return nombre;
+    }
 
-        for (int i = 0; i < 30; i++) {
-            if (i < diaIncremento) {
-                dosisComida[i] = comidaInicial + incremento * i;
-            } else {
-                dosisComida[i] = comidaDiaIncremento - decremento * (i - diaIncremento);
-            }
-        }
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public int getNumeroBacterias() {
+        return numeroBacterias;
+    }
+
+    public double getTemperatura() {
+        return temperatura;
+    }
+
+    public String getLuminosidad() {
+        return luminosidad;
+    }
+
+    public int[] getDosisComida() {
+        return dosisComida;
     }
 }
