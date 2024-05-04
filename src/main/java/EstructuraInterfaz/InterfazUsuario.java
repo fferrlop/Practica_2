@@ -182,6 +182,49 @@ public class InterfazUsuario extends JFrame {
 
         add(new JScrollPane(treeBacterias), BorderLayout.CENTER);
 
+        JButton botonEliminarPoblacion = new JButton("Eliminar Población");
+        panelBoton.add(botonEliminarPoblacion);
+
+        botonEliminarPoblacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String[] experimentosArray = experimentos.stream().map(Experimento::getNombre).toArray(String[]::new);
+                String nombreExperimento = (String) JOptionPane.showInputDialog(null, "Selecciona el experimento del cual quieres eliminar una población", "Experimento", JOptionPane.QUESTION_MESSAGE, null, experimentosArray, experimentosArray[0]);
+
+                Experimento experimentoSeleccionado = null;
+                for (Experimento experimento : experimentos) {
+                    if (experimento.getNombre().equals(nombreExperimento)) {
+                        experimentoSeleccionado = experimento;
+                        break;
+                    }
+                }
+
+                if (experimentoSeleccionado != null) {
+                    String[] bacteriasArray = experimentoSeleccionado.getBacterias().stream().map(Bacteria::getNombre).toArray(String[]::new);
+                    String nombreBacteria = (String) JOptionPane.showInputDialog(null, "Selecciona la población de bacterias que quieres eliminar", "Bacteria", JOptionPane.QUESTION_MESSAGE, null, bacteriasArray, bacteriasArray[0]);
+
+                    Bacteria bacteriaSeleccionada = null;
+                    for (Bacteria bacteria : experimentoSeleccionado.getBacterias()) {
+                        if (bacteria.getNombre().equals(nombreBacteria)) {
+                            bacteriaSeleccionada = bacteria;
+                            break;
+                        }
+                    }
+
+                    if (bacteriaSeleccionada != null) {
+                        experimentoSeleccionado.getBacterias().remove(bacteriaSeleccionada);
+                        File dir = new File("src/main/java/ExperimentosGuardados/" + nombreExperimento + "/" + nombreBacteria + ".txt");
+                        dir.delete();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No se encontró ninguna población de bacterias con ese nombre", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se encontró ningún experimento con ese nombre", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+
         cargarExperimentosExistentes();
     }
 
