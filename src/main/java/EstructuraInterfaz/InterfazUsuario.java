@@ -3,6 +3,10 @@ package EstructuraInterfaz;
 import Bacterias.Bacteria;
 import Experimentos.Experimento;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +20,11 @@ public class InterfazUsuario extends JFrame {
     private List<Experimento> experimentos;
     private DefaultListModel<String> listModel;
     private JList<String> list;
+    private JList<String> listBacterias;
+    private DefaultListModel<String> listModelBacterias;
+    private JTree treeBacterias;
+    private DefaultTreeModel treeModelBacterias;
+
 
     public InterfazUsuario() {
         experimentos = new ArrayList<>();
@@ -99,61 +108,102 @@ public class InterfazUsuario extends JFrame {
 
                 int numeroBacterias = Integer.parseInt(JOptionPane.showInputDialog("Introduce el número de bacterias"));
                 double temperatura = Double.parseDouble(JOptionPane.showInputDialog("Introduce la temperatura"));
-                String luminosidad = JOptionPane.showInputDialog("Introduce la luminosidad");
+                String[] opcionesLuminosidad = {"Alta", "Media", "Baja"};
+                String luminosidad = (String) JOptionPane.showInputDialog(null, "Selecciona la luminosidad", "Luminosidad", JOptionPane.QUESTION_MESSAGE, null, opcionesLuminosidad, opcionesLuminosidad[0]);
 
-                int comidaInicial = Integer.parseInt(JOptionPane.showInputDialog("Introduce la comida inicial"));
-                int diaIncremento = Integer.parseInt(JOptionPane.showInputDialog("Introduce el día de incremento"));
+                int comidaInicial = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
+                int diaIncremento = Integer.parseInt(JOptionPane.showInputDialog("Introduce el día hasta el cual se debe incrementar la cantidad de comida"));
                 int comidaDiaIncremento = Integer.parseInt(JOptionPane.showInputDialog("Introduce la comida del día de incremento"));
-                int comidaFinal = Integer.parseInt(JOptionPane.showInputDialog("Introduce la comida final"));
+                int comidaFinal = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad final de comida en el día 30"));
+
+                int[] dosisComida = new int[30];
+                for (int i = 0; i < 30; i++) {
+                    if (i < diaIncremento) {
+                        dosisComida[i] = comidaInicial + i * (comidaDiaIncremento - comidaInicial) / diaIncremento;
+                    } else {
+                        dosisComida[i] = comidaDiaIncremento + (i - diaIncremento) * (comidaFinal - comidaDiaIncremento) / (30 - diaIncremento);
+                    }
+                }
 
                 String[] experimentosArray = experimentos.stream().map(Experimento::getNombre).toArray(String[]::new);
                 String nombreExperimento = (String) JOptionPane.showInputDialog(null, "Selecciona el experimento", "Experimento", JOptionPane.QUESTION_MESSAGE, null, experimentosArray, experimentosArray[0]);
 
-                Bacteria bacteria = new Bacteria(nombreBacteria, fechaInicio, fechaFin, numeroBacterias, temperatura, luminosidad, comidaInicial, diaIncremento, comidaDiaIncremento, comidaFinal);
+                Bacteria bacteria = new Bacteria(nombreBacteria, fechaInicio, fechaFin, numeroBacterias, temperatura, luminosidad, dosisComida);
                 for (Experimento experimento : experimentos) {
                     if (experimento.getNombre().equals(nombreExperimento)) {
                         experimento.addBacteria(bacteria);
-                        experimento.saveBacteria(bacteria, nombreExperimento + "/" + nombreBacteria + ".ser");
+                        experimento.saveBacteria(bacteria, nombreExperimento + "/" + nombreBacteria + ".txt");
                         break;
                     }
                 }
             }
         });
 
-
-
-        Dimension botonSize = new Dimension(200, 30);
-        botonGuardarNuevaPoblacion.setPreferredSize(botonSize);
-        botonGuardarNuevaPoblacion.setMaximumSize(botonSize);
         panelBoton.add(botonGuardarNuevaPoblacion);
-
-        JButton botonEliminarPoblacion = new JButton("Eliminar población");
-        botonEliminarPoblacion.setPreferredSize(botonSize);
-        botonEliminarPoblacion.setMaximumSize(botonSize);
-        panelBoton.add(botonEliminarPoblacion);
 
         panelSuperior.add(panelBoton, BorderLayout.NORTH);
 
-        JPanel separatorSuperior = new JPanel();
-        separatorSuperior.setPreferredSize(new Dimension(Integer.MAX_VALUE, 1));
-        separatorSuperior.setBackground(Color.BLACK);
-        panelSuperior.add(separatorSuperior, BorderLayout.SOUTH);
-
         add(panelSuperior, BorderLayout.NORTH);
+
+        listBacterias = new JList<>();
+        listModelBacterias = new DefaultListModel<>();
+        listBacterias.setModel(listModelBacterias);
+        treeBacterias = new JTree();
+        treeModelBacterias = new DefaultTreeModel(new DefaultMutableTreeNode());
+        treeBacterias.setModel(treeModelBacterias);
+
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    String selectedExperiment = list.getSelectedValue();
+                    for (Experimento experimento : experimentos) {
+                        if (experimento.getNombre().equals(selectedExperiment)) {
+                            DefaultMutableTreeNode experimentNode = new DefaultMutableTreeNode(selectedExperiment);
+                            for (Bacteria bacteria : experimento.getBacterias()) {
+                                DefaultMutableTreeNode bacteriaNode = new DefaultMutableTreeNode(bacteria.getNombre());
+                                bacteriaNode.add(new DefaultMutableTreeNode("Fecha de inicio: " + bacteria.getFechaInicio()));
+                                bacteriaNode.add(new DefaultMutableTreeNode("Fecha de fin: " + bacteria.getFechaFin()));
+                                bacteriaNode.add(new DefaultMutableTreeNode("Número de bacterias: " + bacteria.getNumeroBacterias()));
+                                bacteriaNode.add(new DefaultMutableTreeNode("Temperatura: " + bacteria.getTemperatura()));
+                                bacteriaNode.add(new DefaultMutableTreeNode("Luminosidad: " + bacteria.getLuminosidad()));
+                                for (int i = 0; i < 30; i++) {
+                                    bacteriaNode.add(new DefaultMutableTreeNode("Dosis de comida día " + (i + 1) + ": " + bacteria.getDosisComida()[i]));
+                                }
+                                experimentNode.add(bacteriaNode);
+                            }
+                            treeModelBacterias.setRoot(experimentNode);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+
+        add(new JScrollPane(treeBacterias), BorderLayout.CENTER);
 
         cargarExperimentosExistentes();
     }
 
     private void cargarExperimentosExistentes() {
         File dir = new File("src/main/java/ExperimentosGuardados/");
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    String nombreExperimento = file.getName();
-                    Experimento experimento = new Experimento(nombreExperimento);
+        File[] experimentDirectories = dir.listFiles();
+        if (experimentDirectories != null) {
+            for (File experimentDirectory : experimentDirectories) {
+                if (experimentDirectory.isDirectory()) {
+                    String experimentName = experimentDirectory.getName();
+                    Experimento experimento = new Experimento(experimentName);
+                    File[] bacteriaFiles = experimentDirectory.listFiles();
+                    if (bacteriaFiles != null) {
+                        for (File bacteriaFile : bacteriaFiles) {
+                            if (bacteriaFile.isFile() && bacteriaFile.getName().endsWith(".txt")) {
+                                Bacteria bacteria = experimento.loadBacteria(experimentName + "/" + bacteriaFile.getName());
+                                experimento.addBacteria(bacteria);
+                            }
+                        }
+                    }
                     experimentos.add(experimento);
-                    listModel.addElement(nombreExperimento);
+                    listModel.addElement(experimentName);
                 }
             }
         }
