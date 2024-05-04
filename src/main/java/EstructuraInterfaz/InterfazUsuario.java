@@ -45,11 +45,13 @@ public class InterfazUsuario extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombreExperimento = JOptionPane.showInputDialog("Introduce el nombre del experimento");
-                Experimento experimento = new Experimento(nombreExperimento);
-                experimentos.add(experimento);
-                File dir = new File("src/main/java/ExperimentosGuardados/" + nombreExperimento);
-                dir.mkdirs();
-                listModel.addElement(nombreExperimento);
+                if (nombreExperimento != null && !nombreExperimento.trim().isEmpty()) {
+                    Experimento experimento = new Experimento(nombreExperimento);
+                    experimentos.add(experimento);
+                    File dir = new File("src/main/java/ExperimentosGuardados/" + nombreExperimento);
+                    dir.mkdirs();
+                    listModel.addElement(nombreExperimento);
+                }
             }
         });
         panelSeparacion.add(botonGuardar, BorderLayout.NORTH);
