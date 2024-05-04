@@ -78,6 +78,23 @@ public class InterfazUsuario extends JFrame {
         panelSuperior.add(separatorSuperior, BorderLayout.SOUTH);
 
         add(panelSuperior, BorderLayout.NORTH);
+
+        cargarExperimentosExistentes();
+    }
+
+    private void cargarExperimentosExistentes() {
+        File dir = new File("src/main/java/ExperimentosGuardados/");
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    String nombreExperimento = file.getName();
+                    Experimento experimento = new Experimento(nombreExperimento);
+                    experimentos.add(experimento);
+                    listModel.addElement(nombreExperimento);
+                }
+            }
+        }
     }
 
     public void mostrarVentana() {
