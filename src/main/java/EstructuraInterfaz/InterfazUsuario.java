@@ -12,6 +12,7 @@ import java.util.List;
 public class InterfazUsuario extends JFrame {
     private List<Experimento> experimentos;
     private DefaultListModel<String> listModel;
+    private JList<String> list;
 
     public InterfazUsuario() {
         experimentos = new ArrayList<>();
@@ -41,8 +42,29 @@ public class InterfazUsuario extends JFrame {
         });
         panelSeparacion.add(botonGuardar, BorderLayout.NORTH);
 
-        JList<String> list = new JList<>(listModel);
+        list = new JList<>(listModel);
         panelSeparacion.add(new JScrollPane(list), BorderLayout.CENTER);
+
+        JButton botonEliminar = new JButton("Eliminar Experimento");
+        botonEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombreExperimento = JOptionPane.showInputDialog("Introduce el nombre del experimento a eliminar");
+                boolean encontrado = false;
+                for (Experimento experimento : experimentos) {
+                    if (experimento.getNombre().equals(nombreExperimento)) {
+                        experimentos.remove(experimento);
+                        listModel.removeElement(nombreExperimento);
+                        encontrado = true;
+                        break;
+                    }
+                }
+                if (!encontrado) {
+                    JOptionPane.showMessageDialog(null, "No se encontró ningún experimento con ese nombre", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        panelSeparacion.add(botonEliminar, BorderLayout.SOUTH);
 
         add(panelSeparacion, BorderLayout.WEST);
 
