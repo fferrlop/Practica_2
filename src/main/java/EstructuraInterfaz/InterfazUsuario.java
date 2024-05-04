@@ -1,11 +1,13 @@
 package EstructuraInterfaz;
 
+import Bacterias.Bacteria;
 import Experimentos.Experimento;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +86,31 @@ public class InterfazUsuario extends JFrame {
         panelBoton.setBackground(Color.LIGHT_GRAY);
 
         JButton botonGuardarNuevaPoblacion = new JButton("Guardar nueva población");
+        botonGuardarNuevaPoblacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombreBacteria = JOptionPane.showInputDialog("Introduce el nombre de la bacteria");
+
+                int comidaInicial = Integer.parseInt(JOptionPane.showInputDialog("Introduce la comida inicial"));
+                int diaIncremento = Integer.parseInt(JOptionPane.showInputDialog("Introduce el día de incremento"));
+                int comidaDiaIncremento = Integer.parseInt(JOptionPane.showInputDialog("Introduce la comida del día de incremento"));
+                int comidaFinal = Integer.parseInt(JOptionPane.showInputDialog("Introduce la comida final"));
+
+                String[] experimentosArray = experimentos.stream().map(Experimento::getNombre).toArray(String[]::new);
+                String nombreExperimento = (String) JOptionPane.showInputDialog(null, "Selecciona el experimento", "Experimento", JOptionPane.QUESTION_MESSAGE, null, experimentosArray, experimentosArray[0]);
+
+                Bacteria bacteria = new Bacteria(nombreBacteria, LocalDate.now(), LocalDate.now().plusDays(30), 100, 37.0, "alta", comidaInicial, diaIncremento, comidaDiaIncremento, comidaFinal);
+                for (Experimento experimento : experimentos) {
+                    if (experimento.getNombre().equals(nombreExperimento)) {
+                        experimento.addBacteria(bacteria);
+                        break;
+                    }
+                }
+            }
+        });
+
+
+
         Dimension botonSize = new Dimension(200, 30);
         botonGuardarNuevaPoblacion.setPreferredSize(botonSize);
         botonGuardarNuevaPoblacion.setMaximumSize(botonSize);
