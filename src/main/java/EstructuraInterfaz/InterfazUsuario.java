@@ -123,7 +123,7 @@ public class InterfazUsuario extends JFrame {
                     if (i < diaIncremento) {
                         dosisComida[i] = comidaInicial + i * (comidaDiaIncremento - comidaInicial) / diaIncremento;
                     } else {
-                        dosisComida[i] = comidaDiaIncremento + (i - diaIncremento) * (comidaFinal - comidaDiaIncremento) / (30 - diaIncremento);
+                        dosisComida[i] = comidaDiaIncremento + (i - diaIncremento) * (comidaFinal - comidaDiaIncremento) / (29 - diaIncremento);
                     }
                 }
 
