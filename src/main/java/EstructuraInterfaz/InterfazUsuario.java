@@ -55,6 +55,8 @@ public class InterfazUsuario extends JFrame {
                     if (experimento.getNombre().equals(nombreExperimento)) {
                         experimentos.remove(experimento);
                         listModel.removeElement(nombreExperimento);
+                        File dir = new File("src/main/java/ExperimentosGuardados/" + nombreExperimento);
+                        deleteDirectory(dir);
                         encontrado = true;
                         break;
                     }
@@ -117,6 +119,21 @@ public class InterfazUsuario extends JFrame {
                 }
             }
         }
+    }
+
+    private boolean deleteDirectory(File dir) {
+        if (dir.isDirectory()) {
+            File[] children = dir.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    boolean success = deleteDirectory(child);
+                    if (!success) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return dir.delete();
     }
 
     public void mostrarVentana() {
