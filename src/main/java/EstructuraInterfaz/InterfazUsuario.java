@@ -275,7 +275,20 @@ public class InterfazUsuario extends JFrame {
         });
 
         cargarExperimentosExistentes();
-    }
+
+        JButton botonOrdenarExperimento = new JButton("Ordenar experimento");
+        panelBoton.add(botonOrdenarExperimento);
+
+        botonOrdenarExperimento.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed (ActionEvent e){
+        // Aquí puedes agregar el código para ordenar el experimento
+        }
+
+    });
+}
+
+
 
     private void cargarExperimentosExistentes() {
         File dir = new File("src/main/java/ExperimentosGuardados/");
