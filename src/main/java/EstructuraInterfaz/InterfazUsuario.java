@@ -111,6 +111,12 @@ public class InterfazUsuario extends JFrame {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
                 LocalDate startDate = LocalDate.parse(startDateString, formatter);
                 LocalDate endDate = LocalDate.parse(endDateString, formatter);
+
+                if (endDate.isBefore(startDate)) {
+                    JOptionPane.showMessageDialog(null, "La fecha de fin no puede ser anterior a la fecha de inicio", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 int duration = (int) ChronoUnit.DAYS.between(startDate, endDate);
 
                 int numeroBacterias = Integer.parseInt(JOptionPane.showInputDialog("Introduce el número de bacterias"));
