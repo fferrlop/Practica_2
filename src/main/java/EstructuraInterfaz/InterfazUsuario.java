@@ -10,7 +10,7 @@ import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -54,6 +54,8 @@ public class InterfazUsuario extends JFrame {
                 }
             }
         });
+
+
         panelSeparacion.add(botonGuardar, BorderLayout.NORTH);
 
         list = new JList<>(listModel);
@@ -134,7 +136,7 @@ public class InterfazUsuario extends JFrame {
                 for (Experimento experimento : experimentos) {
                     if (experimento.getNombre().equals(nombreExperimento)) {
                         experimento.addBacteria(bacteria);
-                        experimento.saveBacteria(bacteria, nombreExperimento + "/" + nombreBacteria + ".txt");
+                        experimento.guardarBacteria(bacteria, nombreExperimento + "/" + nombreBacteria);
                         break;
                     }
                 }
@@ -241,8 +243,8 @@ public class InterfazUsuario extends JFrame {
                     File[] bacteriaFiles = experimentDirectory.listFiles();
                     if (bacteriaFiles != null) {
                         for (File bacteriaFile : bacteriaFiles) {
-                            if (bacteriaFile.isFile() && bacteriaFile.getName().endsWith(".txt")) {
-                                Bacteria bacteria = experimento.loadBacteria(experimentName + "/" + bacteriaFile.getName());
+                            if (bacteriaFile.isFile() && bacteriaFile.getName().endsWith(".dat")) {
+                                Bacteria bacteria = loadBacteriaFromFile(experimentName + "/" + bacteriaFile.getName());
                                 experimento.addBacteria(bacteria);
                             }
                         }
@@ -252,6 +254,23 @@ public class InterfazUsuario extends JFrame {
                 }
             }
         }
+    }
+
+    private Bacteria loadBacteriaFromFile(String filePath) {
+        Bacteria bacteria = null;
+        try {
+            FileInputStream fileIn = new FileInputStream("src/main/java/ExperimentosGuardados/" + filePath);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            bacteria = (Bacteria) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("La clase Bacteria no se encontró");
+            c.printStackTrace();
+        }
+        return bacteria;
     }
 
     private boolean deleteDirectory(File dir) {
