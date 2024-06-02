@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,11 +105,13 @@ public class InterfazUsuario extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombreBacteria = JOptionPane.showInputDialog("Introduce el nombre de la bacteria");
+                String startDateString = JOptionPane.showInputDialog("Introduce la fecha de inicio (formato d/MM/yyyy)");
+                String endDateString = JOptionPane.showInputDialog("Introduce la fecha de fin (formato d/MM/yyyy)");
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-                LocalDate fechaInicio = LocalDate.parse(JOptionPane.showInputDialog("Introduce la fecha de inicio (formato: DD/MM/YYYY)"), formatter);
-                LocalDate fechaFin = LocalDate.parse(JOptionPane.showInputDialog("Introduce la fecha de fin (formato: DD/MM/YYYY)"), formatter);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+                LocalDate startDate = LocalDate.parse(startDateString, formatter);
+                LocalDate endDate = LocalDate.parse(endDateString, formatter);
+                int duration = (int) ChronoUnit.DAYS.between(startDate, endDate);
 
                 int numeroBacterias = Integer.parseInt(JOptionPane.showInputDialog("Introduce el número de bacterias"));
                 double temperatura = Double.parseDouble(JOptionPane.showInputDialog("Introduce la temperatura"));
@@ -118,21 +121,21 @@ public class InterfazUsuario extends JFrame {
                 int comidaInicial = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
                 int diaIncremento = Integer.parseInt(JOptionPane.showInputDialog("Introduce el día hasta el cual se debe incrementar la cantidad de comida"));
                 int comidaDiaIncremento = Integer.parseInt(JOptionPane.showInputDialog("Introduce la comida del día de incremento"));
-                int comidaFinal = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad final de comida en el día 30"));
+                int comidaFinal = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad final de comida en el día " + duration));
 
-                int[] dosisComida = new int[30];
-                for (int i = 0; i < 30; i++) {
+                int[] dosisComida = new int[duration];
+                for (int i = 0; i < duration; i++) {
                     if (i < diaIncremento) {
                         dosisComida[i] = comidaInicial + i * (comidaDiaIncremento - comidaInicial) / diaIncremento;
                     } else {
-                        dosisComida[i] = comidaDiaIncremento + (i - diaIncremento) * (comidaFinal - comidaDiaIncremento) / (29 - diaIncremento);
+                        dosisComida[i] = comidaDiaIncremento + (i - diaIncremento) * (comidaFinal - comidaDiaIncremento) / (duration - 1 - diaIncremento);
                     }
                 }
 
                 String[] experimentosArray = experimentos.stream().map(Experimento::getNombre).toArray(String[]::new);
                 String nombreExperimento = (String) JOptionPane.showInputDialog(null, "Selecciona el experimento", "Experimento", JOptionPane.QUESTION_MESSAGE, null, experimentosArray, experimentosArray[0]);
 
-                Bacteria bacteria = new Bacteria(nombreBacteria, fechaInicio, fechaFin, numeroBacterias, temperatura, luminosidad, dosisComida);
+                Bacteria bacteria = new Bacteria(nombreBacteria, startDate, endDate, numeroBacterias, temperatura, luminosidad, dosisComida);
                 for (Experimento experimento : experimentos) {
                     if (experimento.getNombre().equals(nombreExperimento)) {
                         experimento.addBacteria(bacteria);
@@ -171,8 +174,9 @@ public class InterfazUsuario extends JFrame {
                                 bacteriaNode.add(new DefaultMutableTreeNode("Número de bacterias: " + bacteria.getNumeroBacterias()));
                                 bacteriaNode.add(new DefaultMutableTreeNode("Temperatura: " + bacteria.getTemperatura()));
                                 bacteriaNode.add(new DefaultMutableTreeNode("Luminosidad: " + bacteria.getLuminosidad()));
-                                for (int i = 0; i < 30; i++) {
-                                    bacteriaNode.add(new DefaultMutableTreeNode("Dosis de comida día " + (i + 1) + ": " + bacteria.getDosisComida()[i]));
+                                int[] dosisComida = bacteria.getDosisComida();
+                                for (int i = 0; i < dosisComida.length; i++) {
+                                    bacteriaNode.add(new DefaultMutableTreeNode("Dosis de comida día " + (i + 1) + ": " + dosisComida[i]));
                                 }
                                 experimentNode.add(bacteriaNode);
                             }
