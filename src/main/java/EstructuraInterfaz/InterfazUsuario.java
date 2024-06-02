@@ -312,6 +312,16 @@ public class InterfazUsuario extends JFrame {
                 }
             }
         });
+
+        JButton botonSimulacionMonteCarlo = new JButton("Simulación Monte Carlo");
+        panelBoton.add(botonSimulacionMonteCarlo);
+
+        botonSimulacionMonteCarlo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
 }
 
 
