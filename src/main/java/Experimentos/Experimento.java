@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Experimento {
+public class Experimento implements Serializable {
     private String nombre;
     private List<Bacteria> bacterias;
 
@@ -28,21 +28,13 @@ public class Experimento {
         return bacterias;
     }
 
-    public void saveBacteria(Bacteria bacteria, String filename) {
+    public void guardarBacteria(Bacteria bacteria, String filename) {
         try {
-            File file = new File("src/main/java/ExperimentosGuardados/" + filename);
-            file.getParentFile().mkdirs();
-            PrintWriter writer = new PrintWriter(file);
-            writer.println(bacteria.getNombre());
-            writer.println(bacteria.getFechaInicio());
-            writer.println(bacteria.getFechaFin());
-            writer.println(bacteria.getNumeroBacterias());
-            writer.println(bacteria.getTemperatura());
-            writer.println(bacteria.getLuminosidad());
-            for (int i = 0; i < 30; i++) {
-                writer.println(bacteria.getDosisComida()[i]);
-            }
-            writer.close();
+            FileOutputStream fileOut = new FileOutputStream("src/main/java/ExperimentosGuardados/" + filename + ".dat");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(bacteria);
+            out.close();
+            fileOut.close();
         } catch (IOException i) {
             i.printStackTrace();
         }

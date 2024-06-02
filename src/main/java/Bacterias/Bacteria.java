@@ -1,8 +1,9 @@
 package Bacterias;
 //.
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Bacteria {
+public class Bacteria implements Serializable {
 
     private String nombre;
     private LocalDate fechaInicio;
