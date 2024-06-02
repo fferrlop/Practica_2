@@ -274,4 +274,4 @@ public class InterfazUsuario extends JFrame {
     }
 }
 
-//fin :)
+//fin  :)
