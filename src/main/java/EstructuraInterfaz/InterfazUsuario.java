@@ -119,24 +119,54 @@ public class InterfazUsuario extends JFrame {
 
                 int duration = (int) ChronoUnit.DAYS.between(startDate, endDate);
 
+                String[] opcionesComida = {"Constante", "Linealmente", "Alterna", "Incremento/Decremento"};
+                String suministroComida = (String) JOptionPane.showInputDialog(null, "Selecciona cómo quieres suministrar la comida", "Suministro de comida", JOptionPane.QUESTION_MESSAGE, null, opcionesComida, opcionesComida[0]);
+
+                int[] dosisComida = new int[duration];
+                switch (suministroComida) {
+                    case "Constante":
+                        int comidaConstante = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad constante de comida"));
+                        for (int i = 0; i < duration; i++) {
+                            dosisComida[i] = comidaConstante;
+                        }
+                        break;
+                    case "Linealmente":
+                        int comidaInicial = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
+                        int comidaFinal = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad final de comida en el día " + duration));
+                        for (int i = 0; i < duration; i++) {
+                            dosisComida[i] = comidaInicial + i * (comidaFinal - comidaInicial) / (duration - 1);
+                        }
+                        break;
+                    case "Alterna":
+                        int comidaDiaPar = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad de comida para los días pares"));
+                        int comidaDiaImpar = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad de comida para los días impares"));
+                        for (int i = 0; i < duration; i++) {
+                            if (i % 2 == 0) {
+                                dosisComida[i] = comidaDiaPar;
+                            } else {
+                                dosisComida[i] = comidaDiaImpar;
+                            }
+                        }
+                        break;
+                    case "Incremento/Decremento":
+                        int comidaInicialIncDec = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
+                        int diaLimite = Integer.parseInt(JOptionPane.showInputDialog("Introduce el día límite de incremento"));
+                        int comidaDiaLimite = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad de comida en el día límite"));
+                        int comidaFinalIncDec = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad final de comida en el día " + duration));
+                        for (int i = 0; i < diaLimite; i++) {
+                            dosisComida[i] = comidaInicialIncDec + i * (comidaDiaLimite - comidaInicialIncDec) / (diaLimite - 1);
+                        }
+                        for (int i = diaLimite; i < duration; i++) {
+                            dosisComida[i] = comidaDiaLimite + (i - diaLimite) * (comidaFinalIncDec - comidaDiaLimite) / (duration - diaLimite);
+                        }
+                        break;
+                }
+
                 int numeroBacterias = Integer.parseInt(JOptionPane.showInputDialog("Introduce el número de bacterias"));
                 double temperatura = Double.parseDouble(JOptionPane.showInputDialog("Introduce la temperatura"));
                 String[] opcionesLuminosidad = {"Alta", "Media", "Baja"};
                 String luminosidad = (String) JOptionPane.showInputDialog(null, "Selecciona la luminosidad", "Luminosidad", JOptionPane.QUESTION_MESSAGE, null, opcionesLuminosidad, opcionesLuminosidad[0]);
 
-                int comidaInicial = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
-                int diaIncremento = Integer.parseInt(JOptionPane.showInputDialog("Introduce el día hasta el cual se debe incrementar la cantidad de comida"));
-                int comidaDiaIncremento = Integer.parseInt(JOptionPane.showInputDialog("Introduce la comida del día de incremento"));
-                int comidaFinal = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad final de comida en el día " + duration));
-
-                int[] dosisComida = new int[duration];
-                for (int i = 0; i < duration; i++) {
-                    if (i < diaIncremento) {
-                        dosisComida[i] = comidaInicial + i * (comidaDiaIncremento - comidaInicial) / diaIncremento;
-                    } else {
-                        dosisComida[i] = comidaDiaIncremento + (i - diaIncremento) * (comidaFinal - comidaDiaIncremento) / (duration - 1 - diaIncremento);
-                    }
-                }
 
                 String[] experimentosArray = experimentos.stream().map(Experimento::getNombre).toArray(String[]::new);
                 String nombreExperimento = (String) JOptionPane.showInputDialog(null, "Selecciona el experimento", "Experimento", JOptionPane.QUESTION_MESSAGE, null, experimentosArray, experimentosArray[0]);
