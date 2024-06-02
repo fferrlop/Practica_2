@@ -141,13 +141,13 @@ public class InterfazUsuario extends JFrame {
                         break;
 
                     case "Alterna":
-                        int comidaDiaPar = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad de comida para los días pares"));
-                        int comidaDiaImpar = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad de comida para los días impares"));
+                        int comidaInicialAlterna = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
+                        int incrementoComidaAlterna = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad de comida a sumar en días alternos"));
                         for (int i = 0; i < duration; i++) {
                             if (i % 2 == 0) {
-                                dosisComida[i] = comidaDiaPar;
+                                dosisComida[i] = comidaInicialAlterna + (i / 2) * incrementoComidaAlterna;
                             } else {
-                                dosisComida[i] = comidaDiaImpar;
+                                dosisComida[i] = dosisComida[i - 1];
                             }
                         }
                         break;
