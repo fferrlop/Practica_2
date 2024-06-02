@@ -261,17 +261,18 @@ public class InterfazUsuario extends JFrame {
 
                     if (bacteriaSeleccionada != null) {
                         experimentoSeleccionado.getBacterias().remove(bacteriaSeleccionada);
-                        File dir = new File("src/main/java/ExperimentosGuardados/" + nombreExperimento + "/" + nombreBacteria + ".txt");
-                        dir.delete();
+                        File dir = new File("src/main/java/ExperimentosGuardados/" + nombreExperimento + "/" + nombreBacteria + ".dat");
+                        if (dir.delete()) {
+                            System.out.println("El archivo fue eliminado exitosamente");
+                        } else {
+                            System.out.println("No se pudo eliminar el archivo");
+                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "No se encontró ninguna población de bacterias con ese nombre", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null, "No se encontró ningún experimento con ese nombre", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-
 
         cargarExperimentosExistentes();
     }
