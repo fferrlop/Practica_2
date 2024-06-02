@@ -125,18 +125,21 @@ public class InterfazUsuario extends JFrame {
                 int[] dosisComida = new int[duration];
                 switch (suministroComida) {
                     case "Constante":
-                        int comidaConstante = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad constante de comida"));
+                        int comidaInicial = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
+                        int incrementoComida = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad de comida a sumar cada día"));
                         for (int i = 0; i < duration; i++) {
-                            dosisComida[i] = comidaConstante;
+                            dosisComida[i] = comidaInicial + i * incrementoComida;
                         }
                         break;
+
                     case "Linealmente":
-                        int comidaInicial = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
+                        int comidaInicialLin = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
                         int comidaFinal = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad final de comida en el día " + duration));
                         for (int i = 0; i < duration; i++) {
-                            dosisComida[i] = comidaInicial + i * (comidaFinal - comidaInicial) / (duration - 1);
+                            dosisComida[i] = comidaInicialLin + i * (comidaFinal - comidaInicialLin) / (duration - 1);
                         }
                         break;
+
                     case "Alterna":
                         int comidaDiaPar = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad de comida para los días pares"));
                         int comidaDiaImpar = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad de comida para los días impares"));
@@ -148,6 +151,7 @@ public class InterfazUsuario extends JFrame {
                             }
                         }
                         break;
+
                     case "Incremento/Decremento":
                         int comidaInicialIncDec = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad inicial de comida"));
                         int diaLimite = Integer.parseInt(JOptionPane.showInputDialog("Introduce el día límite de incremento"));
