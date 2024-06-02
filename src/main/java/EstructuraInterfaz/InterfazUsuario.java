@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class InterfazUsuario extends JFrame {
@@ -280,12 +281,37 @@ public class InterfazUsuario extends JFrame {
         panelBoton.add(botonOrdenarExperimento);
 
         botonOrdenarExperimento.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed (ActionEvent e){
-        // Aquí puedes agregar el código para ordenar el experimento
-        }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String[] opcionesOrdenamiento = {"Fecha", "Orden alfabético", "Número de bacterias"};
+                String opcionSeleccionada = (String) JOptionPane.showInputDialog(null, "Selecciona el criterio de ordenamiento", "Ordenar experimento", JOptionPane.QUESTION_MESSAGE, null, opcionesOrdenamiento, opcionesOrdenamiento[0]);
 
-    });
+                String[] experimentosArray = experimentos.stream().map(Experimento::getNombre).toArray(String[]::new);
+                String nombreExperimento = (String) JOptionPane.showInputDialog(null, "Selecciona el experimento a ordenar", "Experimento", JOptionPane.QUESTION_MESSAGE, null, experimentosArray, experimentosArray[0]);
+
+                Experimento experimentoSeleccionado = null;
+                for (Experimento experimento : experimentos) {
+                    if (experimento.getNombre().equals(nombreExperimento)) {
+                        experimentoSeleccionado = experimento;
+                        break;
+                    }
+                }
+
+                if (experimentoSeleccionado != null) {
+                    switch (opcionSeleccionada) {
+                        case "Fecha":
+                            experimentoSeleccionado.getBacterias().sort(Comparator.comparing(Bacteria::getFechaInicio));
+                            break;
+                        case "Orden alfabético":
+                            experimentoSeleccionado.getBacterias().sort(Comparator.comparing(Bacteria::getNombre));
+                            break;
+                        case "Número de bacterias":
+                            experimentoSeleccionado.getBacterias().sort(Comparator.comparing(Bacteria::getNumeroBacterias));
+                            break;
+                    }
+                }
+            }
+        });
 }
 
 
