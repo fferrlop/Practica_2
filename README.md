@@ -15,11 +15,12 @@ Aparte de lo anterior mencionado, se han añadido más propiedades al proyecto, 
 
 En las diferentes formas de suministrar comida habra 4 de ellas: continua, lineal, alterna y creciente/decreciente. Cuyas funciones se encontraran dentro de la interfaz de usuario, se pedira al crear una población cual de estas se quiere usar y las preguntas se acomodarán a la elección.
 
+A nivel gráfico he tomado la decisión de añadir dos paneles para mayor orden, uno a la izquierda para mostrar los experimentos y otro arriba para los botones. Aparte al abrir los experimentos para no mostrar todo de golpe, he hecho que las poblaciones se abran como desplegables a gusto.
+
+Por último para comprobar la integridad del proyecto he realizado un test del main el cual se compila sin errores.
 
 
-
-
-
+Aquí dejo el Diagrama de clases de mi proyecto:
 
 Diagrama de clases UML (https://github.com/fferrlop/Practica_2/assets/146821904/ea2348e1-e688-4f6d-bfb3-ec94719d96b3)
 
