@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Practica1_jar</output-path>
     <root id="archive" name="Practica1.jar">
       <element id="module-output" name="Practica1" />
+      <element id="module-test-output" name="Practica1" />
     </root>
   </artifact>
 </component>

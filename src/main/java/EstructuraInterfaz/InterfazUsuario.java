@@ -1,6 +1,7 @@
 package EstructuraInterfaz;
 
 import Bacterias.Bacteria;
+import Bacterias.MonteCarlo;
 import Experimentos.Experimento;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,6 +18,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class InterfazUsuario extends JFrame {
     private List<Experimento> experimentos;
@@ -319,7 +323,87 @@ public class InterfazUsuario extends JFrame {
         botonSimulacionMonteCarlo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String[] experimentosArray = experimentos.stream().map(Experimento::getNombre).toArray(String[]::new);
+                String nombreExperimento = (String) JOptionPane.showInputDialog(null, "Selecciona el experimento para la simulación", "Simulación Monte Carlo", JOptionPane.QUESTION_MESSAGE, null, experimentosArray, experimentosArray[0]);
 
+                Experimento experimentoSeleccionado = null;
+                for (Experimento experimento : experimentos) {
+                    if (experimento.getNombre().equals(nombreExperimento)) {
+                        experimentoSeleccionado = experimento;
+                        break;
+                    }
+                }
+
+                if (experimentoSeleccionado != null) {
+                    String[] bacteriasArray = experimentoSeleccionado.getBacterias().stream().map(Bacteria::getNombre).toArray(String[]::new);
+                    String nombreBacteria = (String) JOptionPane.showInputDialog(null, "Selecciona la población de bacterias para la simulación", "Simulación Monte Carlo", JOptionPane.QUESTION_MESSAGE, null, bacteriasArray, bacteriasArray[0]);
+
+                    Bacteria bacteriaSeleccionada = null;
+                    for (Bacteria bacteria : experimentoSeleccionado.getBacterias()) {
+                        if (bacteria.getNombre().equals(nombreBacteria)) {
+                            bacteriaSeleccionada = bacteria;
+                            break;
+                        }
+                    }
+                    if (bacteriaSeleccionada != null) {
+                        final Bacteria finalBacteriaSeleccionada = bacteriaSeleccionada;
+                        JFrame simulacionFrame = new JFrame("Simulación Monte Carlo - " + nombreBacteria);
+                        simulacionFrame.setSize(800, 800);
+                        simulacionFrame.setLocationRelativeTo(null);
+
+                        JPanel tablero = new JPanel(new GridLayout(20, 20));
+                        for (int i = 0; i < 400; i++) {
+                            JPanel celda = new JPanel();
+                            celda.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                            tablero.add(celda);
+                        }
+
+                        simulacionFrame.add(tablero);
+                        simulacionFrame.setVisible(true);
+
+                        MonteCarlo monteCarlo = new MonteCarlo();
+                        monteCarlo.inicializarPlato(bacteriaSeleccionada);
+
+                        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+                        executor.scheduleAtFixedRate(new Runnable() {
+                            int dia = 0;
+
+                            @Override
+                            public void run() {
+                                monteCarlo.simularDia(finalBacteriaSeleccionada);
+
+                                int[][] resultados = monteCarlo.getPlato();
+
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        for (int i = 0; i < 20; i++) {
+                                            for (int j = 0; j < 20; j++) {
+                                                JPanel celda = (JPanel) tablero.getComponent(i * 20 + j);
+                                                int numeroBacterias = resultados[i][j];
+                                                if (numeroBacterias == 0) {
+                                                    celda.setBackground(Color.WHITE);
+                                                } else if (numeroBacterias <= 10) {
+                                                    celda.setBackground(Color.GREEN);
+                                                } else if (numeroBacterias <= 20) {
+                                                    celda.setBackground(Color.ORANGE);
+                                                } else {
+                                                    celda.setBackground(Color.RED);
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+
+                                dia++;
+
+                                if (dia >= finalBacteriaSeleccionada.getDosisComida().length) {
+                                    executor.shutdown();
+                                }
+                            }
+                        }, 0, 1, TimeUnit.SECONDS);
+                    }
+                }
             }
         });
 }
