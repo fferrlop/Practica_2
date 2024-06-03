@@ -1,4 +1,4 @@
-Enlace al repositorio:  https://github.com/fferrlop/Practica1.git
+Enlace al repositorio: https://github.com/fferrlop/Practica_2.git
 
 
 En este trabajo, implementando swing para la interfaz, he hecho un programa con el cual se podrán guardar nuevos packages los cuales serán experimentos. 
